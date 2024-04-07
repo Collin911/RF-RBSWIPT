@@ -101,11 +101,11 @@ function [iterTimes, PowerTotalItr, PowerFinalDistr, PhaseFinalDistr,...
         power_BS_recv(i) =(sum((BS_R_power)));     % 接收端到发射端的功率
         rReturn = 1 - rComm;
         BS_R_power = BS_R_power .* rReturn;
-        % if lambda_t >= 0.0093 % wavelength of 32GHz
-        %     PA_Type = "HMC519";
-        % else
-        %     PA_Type = "ADL8106";
-        % end
+        if lambda_t >= 0.0093 % wavelength of 32GHz
+            PA_Type = "HMC519";
+        else
+            PA_Type = "ADL8106";
+        end
         BS_T_power = abs(Power_Amplify(BS_R_power, "ADL8106"));
         % BS_T_power = RF_PA(BS_R_power);
         power_BS_emit(i) =(sum((BS_T_power)));  % 发射端PA放大后的功率
@@ -113,7 +113,7 @@ function [iterTimes, PowerTotalItr, PowerFinalDistr, PhaseFinalDistr,...
         % PLL err = 0.3101723
         % Err = (rand(1,2500)-0.5).*0.5582; % Uniform error
         Err = randn(1, array_nt*array_nt).*0.3101723; % normal distributed err
-        
+        Err = 0;
         BS_T_phase = BS_R_phase + Err; %PLL获取相位，同时具有误差
 
         % This is used to capture progress plot data
@@ -149,7 +149,7 @@ function [iterTimes, PowerTotalItr, PowerFinalDistr, PhaseFinalDistr,...
         % PLL err = 0.3101723
         % Err = (rand(1,2500)-0.5).*0.5951;
         Err = randn(1, array_nt*array_nt).*0.3101723;
-        
+        Err = 0;
         MT_T_phase = MT_R_phase + Err;
                  
 

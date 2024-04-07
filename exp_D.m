@@ -15,30 +15,30 @@ lambda_t = c/ft;                                                            %发
 lambda_r = c/fr;                                                            %接收端波长
 D = 3;                                                                      %正对距离
 R_x = 0;                                                                    %偏移距离
-array_nt = 50;                                                              %天线发射阵元边长
-array_nr = 50;                                                              %天线接收阵元边长
+array_nt = 32;                                                              %天线发射阵元边长
+array_nr = 32;                                                              %天线接收阵元边长
 array_dt = lambda_t/2;                                                      %阵元间距离,默认半波长
 array_dr = lambda_r/2;                                                      %阵元间距离,默认半波长
 Gt = pi;                                                                    %天线的增益，为最大功率与理想点功率的比值，相当于3dm
-rComm = 0.0065;
-rPower = 0.99;                                                             %功率返回比例
+rComm = 0.005;
+rPower = 0.895;                                                             %功率返回比例
 
 % 分析1：迭代优化，阵列数量40*40，距离
-% Benchmark Testing
+
 % [N, P, Pp, Ppa, Pr, Po, Power_p, Power_r, Phase_p, Phase_r, Pos_p, Pos_r, Power_p_1, Phase_p_1] = ...
 %     ARRAY_PAIR(lambda_t, array_nt, array_nr, array_dt, Gt, D, R_x);
-for D = [1:0.2:10]
+for D = [1:0.2:5]
     D
     % This is the benchmark tesing do NOT uncomment unless needed
     % [N, P, Pp, Ppa, Pr, Po, Power_p, Power_r, Phase_p, Phase_r, Pos_p, Pos_r, Power_p_1, Phase_p_1] = ...
     %      ARRAY_PAIR(lambda_t, array_nt, array_nr, array_dt, Gt, D, R_x);
     [iterTimes1, PowerTotalItr1, PowerFinalDistr1, PhaseFinalDistr1,Positions1, PowerFirstDistr1, PhaseFirstDistr1, Ez_p1, Ez_r1, ~] = ...
-        ARRAY_PAIR_v6(lambda_t, lambda_r, array_nt, array_nr, array_dt, array_dr, Gt, D, R_x, rComm, rPower);
+        ARRAY_PAIR_v6_no_noise(lambda_t, lambda_r, array_nt, array_nr, array_dt, array_dr, Gt, D, R_x, rComm, rPower);
     [PBt1,PMr1,PMt1,PBr1] = Parse_compact_return(PowerTotalItr1);
     eta_down1= PMr1./PBt1;        % 下行链路效率
     eta_up1 = PBr1./PMt1;
     Precv = PMr1 - PMt1;
-    filename = sprintf('./results/dist%.1fshift%.1f.mat',D,R_x);
+    filename = sprintf('./results/32x32_ADL8106/dist%.1fshift%.1f.mat',D,R_x);
     save(filename)
 
     [iterTimes1, PowerTotalItr1, PowerFinalDistr1, PhaseFinalDistr1,Positions1, PowerFirstDistr1, PhaseFirstDistr1, Ez_p1, Ez_r1, ~] = ...
@@ -58,7 +58,7 @@ for D = [1:0.2:10]
     eta_up2 = PBr2./PMt2;
     eta_down3= PMr3./PBt3;        % 下行链路效率
     eta_up3 = PBr3./PMt3;
-    filename = sprintf('./results/dist%.1fshift%.1f_noisy.mat',D,R_x);
+    filename = sprintf('./results/32x32_ADL8106/dist%.1fshift%.1f_noisy.mat',D,R_x);
     save(filename)
 end
 
