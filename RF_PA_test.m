@@ -18,7 +18,7 @@ clear;
 
 % 使用W为单位
 Pin = 0.00001:0.00001:0.01;
-% Pout = Power_Amplify(Pin, "ADL8106", 1);
+Pout = Power_Amplify(Pin, "ADL8106", 1);
 % Pin = -10:0.0001:14;
 Pout = RF_PA(Pin);
 RF_PA = [Pin; Pout];
