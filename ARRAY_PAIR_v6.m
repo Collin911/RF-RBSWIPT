@@ -5,7 +5,7 @@
 % 返回值分别为迭代次数、稳定后接收阵列功率、发射阵列迭代功率、接收阵列迭代功率、稳定后发射（接收）端功率分布、相位分布
 function [iterTimes, PowerTotalItr, PowerFinalDistr, PhaseFinalDistr,... 
     Positions, PowerFirstDistr, PhaseFirstDistr, Ez_p, Ez_r, plot] = ...
-    ARRAY_PAIR_v6_no_noise(lambda_t, lambda_r, array_nt, array_nr, array_dt, array_dr, Gt, D, R_x, rComm, rPower)
+    ARRAY_PAIR_v6(lambda_t, lambda_r, array_nt, array_nr, array_dt, array_dr, Gt, D, R_x, rComm, rPower)
 % T is for Tx, R is for Rx
 % Both BS and MT has its respective Tx and Rx
 % rComm is the ratio splitted for communication
@@ -99,15 +99,15 @@ function [iterTimes, PowerTotalItr, PowerFinalDistr, PhaseFinalDistr,...
         
         % 2.发射端进行PA放大
         power_BS_recv(i) =(sum((BS_R_power)));     % 接收端到发射端的功率
-        rReturn = 1 - rComm;
+        rReturn = 1 - rComm*10;
         BS_R_power = BS_R_power .* rReturn;
         % if lambda_t >= 0.0093 % wavelength of 32GHz
         %     PA_Type = "HMC519";
         % else
         %     PA_Type = "ADL8106";
         % end
-        BS_T_power = abs(Power_Amplify(BS_R_power, "ADL8106"));
-        % BS_T_power = RF_PA(BS_R_power);
+        % BS_T_power = abs(Power_Amplify(BS_R_power, "ADL8106"));
+        BS_T_power = RF_PA(BS_R_power);
         power_BS_emit(i) =(sum((BS_T_power)));  % 发射端PA放大后的功率
         
         % PLL err = 0.3101723
@@ -154,11 +154,11 @@ function [iterTimes, PowerTotalItr, PowerFinalDistr, PhaseFinalDistr,...
                  
 
         iterTimes = i;      % 迭代次数
-        % 截至条件：两次的功率差少于0.5%
+        % 截至条件：两次的功率差少于1%
         if i > 1
             if (power_MT_recv(i) - power_MT_recv(i-1))>=0 &&... 
-                    (power_MT_recv(i) - power_MT_recv(i-1)) < (power_MT_recv(i-1)*0.005)&&...
-                    (power_BS_recv(i) - power_BS_recv(i-1)) < (power_BS_recv(i-1)*0.005)
+                    abs(power_MT_recv(i) - power_MT_recv(i-1)) < (power_MT_recv(i-1)*0.01)&&...
+                    abs(power_BS_recv(i) - power_BS_recv(i-1)) < (power_BS_recv(i-1)*0.01)
                 power_BS_recv = power_BS_recv(1:i);
                 power_BS_emit = power_BS_emit(1:i);
                 power_MT_emit = power_MT_emit(1:i);

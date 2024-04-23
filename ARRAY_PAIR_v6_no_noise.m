@@ -99,15 +99,15 @@ function [iterTimes, PowerTotalItr, PowerFinalDistr, PhaseFinalDistr,...
         
         % 2.发射端进行PA放大
         power_BS_recv(i) =(sum((BS_R_power)));     % 接收端到发射端的功率
-        rReturn = 1 - rComm;
+        rReturn = 1 - rComm*10;
         BS_R_power = BS_R_power .* rReturn;
-        if lambda_t >= 0.0093 % wavelength of 32GHz
-            PA_Type = "HMC519";
-        else
-            PA_Type = "ADL8106";
-        end
-        BS_T_power = abs(Power_Amplify(BS_R_power, "ADL8106"));
-        % BS_T_power = RF_PA(BS_R_power);
+        % if lambda_t >= 0.0093 % wavelength of 32GHz
+        %     PA_Type = "HMC519";
+        % else
+        %     PA_Type = "ADL8106";
+        % end
+        % BS_T_power = abs(Power_Amplify(BS_R_power, "ADL8106"));
+        BS_T_power = RF_PA(BS_R_power);
         power_BS_emit(i) =(sum((BS_T_power)));  % 发射端PA放大后的功率
         
         % PLL err = 0.3101723
@@ -117,14 +117,23 @@ function [iterTimes, PowerTotalItr, PowerFinalDistr, PhaseFinalDistr,...
         BS_T_phase = BS_R_phase + Err; %PLL获取相位，同时具有误差
 
         % This is used to capture progress plot data
-        % plotidx = [1 2 3 4 5 10];
+        % plotidx = [1 5];
         % if ismember(i, plotidx)
         %     [xx,yy,zz] = Scan_space_power([-0.1,1.3],[-0.1,3.1],MT_T_phase,MT_T_power,MT_T_pos,lambda_r,Gt);
         %     % Plot_space_power(xx,yy,zz)
         %     [xx,yy,zz2] = Scan_space_power([-0.1,1.3],[-0.1,3.1],BS_T_phase,BS_T_power,BS_T_pos,lambda_t,Gt);
         %     % Plot_space_power(xx,yy,zz2)
-        %     filename = sprintf('./results/space_plot/d3r1itr%d.mat',i);
+        %     filename = sprintf('./results/space_plot/r.4d3r1itr%d.mat',i);
         %     save(filename, "xx", "yy", "zz", "zz2")
+        % end
+        % plotidx = [2];
+        % if ismember(i, plotidx)
+        %     %[xx,yy,zz] = Scan_surface_power([-0.3,0.3],[-0.3,0.3], 0, MT_T_phase,MT_T_power,MT_T_pos,lambda_r,Gt);
+        %     % Plot_space_power(xx,yy,zz)
+        %     [xx,yy,zz2] = Scan_surface_power([-0.3,0.3],[-0.3,0.3], D, BS_T_phase,BS_T_power,BS_T_pos,lambda_t,Gt);
+        %     % Plot_space_power(xx,yy,zz2)
+        %     filename = sprintf('./results/space_plot/r.4d3r1itr%dsurf.mat',i);
+        %     save(filename, "xx", "yy", "zz2")
         % end
 
         % 3.发射端到接收端
@@ -154,11 +163,11 @@ function [iterTimes, PowerTotalItr, PowerFinalDistr, PhaseFinalDistr,...
                  
 
         iterTimes = i;      % 迭代次数
-        % 截至条件：两次的功率差少于0.5%
+        % 截至条件：两次的功率差少于0.1%
         if i > 1
             if (power_MT_recv(i) - power_MT_recv(i-1))>=0 &&... 
-                    (power_MT_recv(i) - power_MT_recv(i-1)) < (power_MT_recv(i-1)*0.005)&&...
-                    (power_BS_recv(i) - power_BS_recv(i-1)) < (power_BS_recv(i-1)*0.005)
+                    abs(power_MT_recv(i) - power_MT_recv(i-1)) < (power_MT_recv(i-1)*0.01)&&...
+                    abs(power_BS_recv(i) - power_BS_recv(i-1)) < (power_BS_recv(i-1)*0.01)
                 power_BS_recv = power_BS_recv(1:i);
                 power_BS_emit = power_BS_emit(1:i);
                 power_MT_emit = power_MT_emit(1:i);
@@ -169,15 +178,20 @@ function [iterTimes, PowerTotalItr, PowerFinalDistr, PhaseFinalDistr,...
                  if stable_cnt < 0 % Only reset counter at first stability
                     stable_cnt = 10;
                     disp('Stability Reached')
-                    % This is used to capture the progress plot data in the
-                    % stable condition
-                    % [xx,yy,zz] = Scan_space_power([-0.2,0.2],[-0.1,3.1],MT_T_phase,MT_T_power,MT_T_pos,lambda_r,Gt);
+                    % % This is used to capture the progress plot data in the
+                    % % stable condition
+                    % [xx,yy,zz] = Scan_space_power([-0.1,1.3],[-0.1,3.1],MT_T_phase,MT_T_power,MT_T_pos,lambda_r,Gt);
                     % % Plot_space_power(xx,yy,zz)
-                    % [xx,yy,zz2] = Scan_space_power([-0.2,0.2],[-0.1,3.1],BS_T_phase,BS_T_power,BS_T_pos,lambda_t,Gt);
+                    % [xx,yy,zz2] = Scan_space_power([-0.1,1.3],[-0.1,3.1],BS_T_phase,BS_T_power,BS_T_pos,lambda_t,Gt);
                     % % Plot_space_power(xx,yy,zz2)
-
-                    % filename = sprintf('./results/space_plot/d3r1itr%d.mat',i);
+                    % filename = sprintf('./results/space_plot/r.4d3r1itr%d.mat',i);
                     % save(filename, "xx", "yy", "zz", "zz2")
+
+                    % [xx,yy,zz2] = Scan_surface_power([-0.3,0.3],[-0.3,0.3], D, BS_T_phase,BS_T_power,BS_T_pos,lambda_t,Gt);
+                    % % Plot_space_power(xx,yy,zz2)
+                    % filename = sprintf('./results/space_plot/r.4d3r1itr%dsurf.mat',i);
+                    % save(filename, "xx", "yy", "zz2")
+
                  end
             end
             if (power_MT_recv(i) < power_MT_recv(i-1) * 0.8)

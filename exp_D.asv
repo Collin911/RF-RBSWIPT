@@ -13,8 +13,8 @@ ft = 28e9;                                                                  %发
 fr = 32e9;                                                                  %接收端频率,50GHz
 lambda_t = c/ft;                                                            %发射端波长
 lambda_r = c/fr;                                                            %接收端波长
-D = 2;                                                                      %正对距离
-R_x = 1.6;                                                                    %偏移距离
+D = 3;                                                                      %正对距离
+R_x = 0;                                                                    %偏移距离
 array_nt = 32;                                                              %天线发射阵元边长
 array_nr = 32;                                                              %天线接收阵元边长
 array_dt = lambda_t/2;                                                      %阵元间距离,默认半波长
@@ -27,8 +27,8 @@ rPower = 0.895;                                                             %功
 
 % [N, P, Pp, Ppa, Pr, Po, Power_p, Power_r, Phase_p, Phase_r, Pos_p, Pos_r, Power_p_1, Phase_p_1] = ...
 %     ARRAY_PAIR(lambda_t, array_nt, array_nr, array_dt, Gt, D, R_x);
-for R_x = [-1.6:0.2:-0.2 0.2:0.2:1.6]
-    R_x
+for D = [2]
+    D
     % This is the benchmark tesing do NOT uncomment unless needed
     % [N, P, Pp, Ppa, Pr, Po, Power_p, Power_r, Phase_p, Phase_r, Pos_p, Pos_r, Power_p_1, Phase_p_1] = ...
     %      ARRAY_PAIR(lambda_t, array_nt, array_nr, array_dt, Gt, D, R_x);
