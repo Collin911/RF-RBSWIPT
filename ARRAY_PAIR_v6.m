@@ -86,6 +86,8 @@ function [iterTimes, PowerTotalItr, PowerFinalDistr, PhaseFinalDistr,...
     stable_cnt = -1; % Used to control iterations after stability
     zz = [];
     for i = 1:step
+        phase_noise_var = 0.3101723;
+        phase_noise_var = 0.8;
         stable_cnt = stable_cnt - 1;
         disp(i);
         
@@ -112,20 +114,20 @@ function [iterTimes, PowerTotalItr, PowerFinalDistr, PhaseFinalDistr,...
         
         % PLL err = 0.3101723
         % Err = (rand(1,2500)-0.5).*0.5582; % Uniform error
-        Err = randn(1, array_nt*array_nt).*0.3101723; % normal distributed err
+        Err = randn(1, array_nt*array_nt).*phase_noise_var; % normal distributed err
         
         BS_T_phase = BS_R_phase + Err; %PLL获取相位，同时具有误差
 
         % This is used to capture progress plot data
-        % plotidx = [1 2 3 4 5 10];
-        % if ismember(i, plotidx)
-        %     [xx,yy,zz] = Scan_space_power([-0.1,1.3],[-0.1,3.1],MT_T_phase,MT_T_power,MT_T_pos,lambda_r,Gt);
-        %     % Plot_space_power(xx,yy,zz)
-        %     [xx,yy,zz2] = Scan_space_power([-0.1,1.3],[-0.1,3.1],BS_T_phase,BS_T_power,BS_T_pos,lambda_t,Gt);
-        %     % Plot_space_power(xx,yy,zz2)
-        %     filename = sprintf('./results/space_plot/d3r1itr%d.mat',i);
-        %     save(filename, "xx", "yy", "zz", "zz2")
-        % end
+        plotidx = [2];
+        if ismember(i, plotidx)
+            [xx,yy,zz] = Scan_space_power([-0.2,0.2],[-0.1,3.1],MT_T_phase,MT_T_power,MT_T_pos,lambda_r,Gt);
+            % Plot_space_power(xx,yy,zz)
+            [xx,yy,zz2] = Scan_space_power([-0.2,0.2],[-0.1,3.1],BS_T_phase,BS_T_power,BS_T_pos,lambda_t,Gt);
+            % Plot_space_power(xx,yy,zz2)
+            filename = sprintf('./results/space_plot/r.4d3r0itr%d_highnoise.mat',i);
+            save(filename, "xx", "yy", "zz", "zz2")
+        end
 
         % 3.发射端到接收端
          [MT_R_phase, MT_R_power, Er] = power_transfer_from_array_to_array_v2...
@@ -148,7 +150,7 @@ function [iterTimes, PowerTotalItr, PowerFinalDistr, PhaseFinalDistr,...
 
         % PLL err = 0.3101723
         % Err = (rand(1,2500)-0.5).*0.5951;
-        Err = randn(1, array_nt*array_nt).*0.3101723;
+        Err = randn(1, array_nt*array_nt).*phase_noise_var;
         
         MT_T_phase = MT_R_phase + Err;
                  
@@ -167,17 +169,17 @@ function [iterTimes, PowerTotalItr, PowerFinalDistr, PhaseFinalDistr,...
                  % instead of breaking, we use stable_cnt to control how
                  % many iterations performed after stability. 
                  if stable_cnt < 0 % Only reset counter at first stability
-                    stable_cnt = 10;
+                    stable_cnt = 1;
                     disp('Stability Reached')
                     % This is used to capture the progress plot data in the
                     % stable condition
-                    % [xx,yy,zz] = Scan_space_power([-0.2,0.2],[-0.1,3.1],MT_T_phase,MT_T_power,MT_T_pos,lambda_r,Gt);
-                    % % Plot_space_power(xx,yy,zz)
-                    % [xx,yy,zz2] = Scan_space_power([-0.2,0.2],[-0.1,3.1],BS_T_phase,BS_T_power,BS_T_pos,lambda_t,Gt);
-                    % % Plot_space_power(xx,yy,zz2)
+                    [xx,yy,zz] = Scan_space_power([-0.2,0.2],[-0.1,3.1],MT_T_phase,MT_T_power,MT_T_pos,lambda_r,Gt);
+                    % Plot_space_power(xx,yy,zz)
+                    [xx,yy,zz2] = Scan_space_power([-0.2,0.2],[-0.1,3.1],BS_T_phase,BS_T_power,BS_T_pos,lambda_t,Gt);
+                    % Plot_space_power(xx,yy,zz2)
 
-                    % filename = sprintf('./results/space_plot/d3r1itr%d.mat',i);
-                    % save(filename, "xx", "yy", "zz", "zz2")
+                    filename = sprintf('./results/space_plot/r.4d3r0itr%d_noise.mat',i);
+                    save(filename, "xx", "yy", "zz", "zz2")
                  end
             end
             if (power_MT_recv(i) < power_MT_recv(i-1) * 0.8)

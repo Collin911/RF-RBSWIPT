@@ -141,9 +141,70 @@ legend(ah, [capu, capd], 'SE Uplink', 'SE Downlink', ...
     'FontSize', 14, 'Location', 'South')
 legend boxoff;
 
+%% Gaussian BER vs Distance
+% !!! Run this section after the previous one
+% This section do NOT load data on its own.
+
+% close all;
+M = 4;                         % MPSK
+k = log2(M);                   % Bits per symbol
+N_sym = 10;                    % Symbols per block
+N_bit = k * N_sym;             % Total bits
+N_block = 50000;              % Number of blocks
+Es = 1;                        % Normalize symbol energy    
+Eb = Es / k;                   % Energy per bit
+Eb_N0_dB = SNRun;              % SNR range in dB
+
+% Convert SNR from dB to linear scale
+Eb_N0 = 10.^(Eb_N0_dB / 10);
+N0 = Eb ./ Eb_N0;              % Noise power spectral density
+len_EbN0 = length(Eb_N0);
+
+figure;
+set(gcf, 'unit', 'inch', 'position', [3 2.5 7 4])
+Num_BER = {};
+
+EbN0_pointer = 1;
+temp_EbN0_pointer = EbN0_pointer;
+errs = zeros(1, len_EbN0);     % Initialize error count
+block_count = zeros(1, len_EbN0);
+
+while (EbN0_pointer <= len_EbN0) && (block_count(len_EbN0) < N_block)
+    B = round(rand(1, N_bit)); % Generate random binary sequence
+    Dm = reshape(B, k, N_sym); % Matrix transpose
+    D = Dm(1,:) + 1i * Dm(2,:); % Generate two independent binary signals
+    Tx_data = sqrt(Eb) * (2 * D - (1 + 1i)); % Transmit bipolar non-return-to-zero binary signal
+
+    for n = EbN0_pointer : len_EbN0
+        Rx_data = awgn(Tx_data, SNRun(EbN0_pointer), 'measured');       %接收端信号
+        y = Rx_data; % No channel gain since AWGN
+        Recov_Tx_data= sqrt(Eb)*(sign(real(y))+1i*sign(imag(y)));
+        Recov_D = 0.5*(1+1i+Recov_Tx_data/sqrt(Eb));
+        errs(n)= errs(n)+sum(abs(Recov_D-D).^2);            %计算错误比特数
+        if errs(n)>=1000
+            temp_EbN0_pointer = temp_EbN0_pointer+1;
+            disp('1000 err collected')
+        end
+        block_count(n)=block_count(n)+1;                    %进入下一块循环
+    end
+
+    block_count
+    EbN0_pointer = temp_EbN0_pointer;
+end
+
+Num_BER = [Num_BER, errs ./ (N_bit * block_count)]; % Simulated BER
+
+semilogy(Ds, cell2mat(Num_BER(1)),'LineWidth',2,'Marker', 'square','MarkerSize',4);                              %做出误码率曲线
+hold on;
+grid on;
+xlabel('E_b/N_0 (dB)');
+ylabel('Bit Error Rate (BER)');
+title('QPSK with AWGN Channel');
+legend('AWGN', 'Location', 'Southwest');
 
 
-%% BER vs Distance
+
+%% Rician BER vs Distance
 % !!! Run this section after the previous one
 % This section do NOT load data on its own.
 
