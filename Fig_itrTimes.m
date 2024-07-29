@@ -1,4 +1,4 @@
-%% Iterations vs Distance
+%% Iterations vs Distancefigure
 
 itrT = [];
 time = [];
