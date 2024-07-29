@@ -27,22 +27,22 @@ rPower = 0.99;                                                             %功�
 
 % [N, P, Pp, Ppa, Pr, Po, Power_p, Power_r, Phase_p, Phase_r, Pos_p, Pos_r, Power_p_1, Phase_p_1] = ...
 %     ARRAY_PAIR(lambda_t, array_nt, array_nr, array_dt, Gt, D, R_x);
-for D = 1.2:0.2:5
+for D = 3
     D
     % This is the benchmark tesing do NOT uncomment unless needed
     % [N, P, Pp, Ppa, Pr, Po, Power_p, Power_r, Phase_p, Phase_r, Pos_p, Pos_r, Power_p_1, Phase_p_1] = ...
     %      ARRAY_PAIR(lambda_t, array_nt, array_nr, array_dt, Gt, D, R_x);
-    [iterTimes1, PowerTotalItr1, PowerFinalDistr1, PhaseFinalDistr1,Positions1, PowerFirstDistr1, PhaseFirstDistr1, Ez_p1, Ez_r1, ~] = ...
-        ARRAY_PAIR_v6_no_noise(lambda_t, lambda_r, array_nt, array_nr, array_dt, array_dr, Gt, D, R_x, rComm, rPower);
-    [PBt1,PMr1,PMt1,PBr1] = Parse_compact_return(PowerTotalItr1);
-    eta_down1= PMr1./PBt1;        % 下行链路效率
-    eta_up1 = PBr1./PMt1;
-    Precv = PMr1 - PMt1;
-    filename = sprintf('./results/50x50_single_HMC1132_/dist%.1fshift%.1fITR.mat',D,R_x);
-    save(filename)
-
     % [iterTimes1, PowerTotalItr1, PowerFinalDistr1, PhaseFinalDistr1,Positions1, PowerFirstDistr1, PhaseFirstDistr1, Ez_p1, Ez_r1, ~] = ...
-    %     ARRAY_PAIR_v6(lambda_t, lambda_r, array_nt, array_nr, array_dt, array_dr, Gt, D, R_x, rComm, rPower);
+    %     ARRAY_PAIR_v6_no_noise(lambda_t, lambda_r, array_nt, array_nr, array_dt, array_dr, Gt, D, R_x, rComm, rPower);
+    % [PBt1,PMr1,PMt1,PBr1] = Parse_compact_return(PowerTotalItr1);
+    % eta_down1= PMr1./PBt1;        % 下行链路效率
+    % eta_up1 = PBr1./PMt1;
+    % Precv = PMr1 - PMt1;
+    % filename = sprintf('./results/50x50_single_HMC1132_/dist%.1fshift%.1fITR.mat',D,R_x);
+    % save(filename)
+
+    [iterTimes1, PowerTotalItr1, PowerFinalDistr1, PhaseFinalDistr1,Positions1, PowerFirstDistr1, PhaseFirstDistr1, Ez_p1, Ez_r1, ~] = ...
+        ARRAY_PAIR_v6(lambda_t, lambda_r, array_nt, array_nr, array_dt, array_dr, Gt, D, R_x, rComm, rPower);
     % [iterTimes2, PowerTotalItr2, PowerFinalDistr2, PhaseFinalDistr2,Positions2, PowerFirstDistr2, PhaseFirstDistr2, Ez_p2, Ez_r2, ~] = ...
     %     ARRAY_PAIR_v6(lambda_t, lambda_r, array_nt, array_nr, array_dt, array_dr, Gt, D, R_x, rComm, rPower);
     % [iterTimes3, PowerTotalItr3, PowerFinalDistr3, PhaseFinalDistr3,Positions3, PowerFirstDistr3, PhaseFirstDistr3, Ez_p3, Ez_r3, ~] = ...
