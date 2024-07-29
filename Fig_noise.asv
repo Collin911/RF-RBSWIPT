@@ -1,7 +1,7 @@
 clear all
 figure1 = figure;
 set(gcf, 'unit', 'inch', 'position', [3 5 7 1.8]);
-filename = sprintf('./results/space_plot/r.4d3r0itr2.mat');
+filename = sprintf('./results/space_plot/r.4d3r0itr2_noise.mat');
 load(filename);
 
 % zz = pow2db(zz);
@@ -11,7 +11,7 @@ load(filename);
 % zz2 = pow2db(zz2);
 % zmax = min(min(zz2));
 % zz2 = 1 - zz2 ./ zmax;
-subplot('position', [0.1/3 0.17 0.45 0.65])  
+subplot('position', [0.1/3 0.21 0.4 0.65])  
 [X, Y] = meshgrid([-0.1:0.01:3.1], [-0.2:0.01:0.2]);
 mesh(X, Y, zz2)
 title('Power Emitted from BS','interpreter', 'latex', 'FontName', 'Times New Roman', 'FontSize', 16) 
@@ -29,9 +29,9 @@ ax = gca;
 xlabelHandle.Position = [0.5, ax.YLim(1)-0.1, ax.ZLim(1)-0.1];
 ylabelHandle.Position = [ax.XLim(1)-0.3, min(Y(:))+0.05, ax.ZLim(1)-0.1];
 xlabelHandle.Rotation = 8; % 设定合适的旋转角度
-ylabelHandle.Rotation = -13; % 设定合适的旋转角度
+ylabelHandle.Rotation = -9; % 设定合适的旋转角度
 
-subplot('position', [00.45+0.25/3 0.17 0.45 0.65])  
+subplot('position', [00.45+0.25/3 0.21 0.4 0.65])  
 mesh(X, Y, zz)
 colormap('jet');  
 axis on
@@ -48,19 +48,21 @@ ax = gca;
 xlabelHandle.Position = [0.5, ax.YLim(1)-0.1, ax.ZLim(1)-0.1];
 ylabelHandle.Position = [ax.XLim(1)-0.3, min(Y(:))+0.05, ax.ZLim(1)-0.1];
 xlabelHandle.Rotation = 8; % 设定合适的旋转角度
-ylabelHandle.Rotation = -13; % 设定合适的旋转角度
+ylabelHandle.Rotation = -9; % 设定合适的旋转角度
 title('Power Emitted from UD','interpreter', 'latex', 'FontName', 'Times New Roman', 'FontSize', 16) 
 
- annotation(figure1,'textarrow',[0.5 0.32],...
-    [0.75 0.65],'Color',[0 0 0],'TextColor',[0 0 0],...
-    'String',{'Main beam'},...
-    'LineWidth',2,...
-    'FontWeight','bold',...
-    'FontSize',14,...
-    'FontName','Times New Roman', ...
-    'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom');
- annotation(figure1,"arrow",[0.55 0.75],...
-    [0.75 0.65],'Color',[0 0 0], 'LineWidth',2)
+ % annotation(figure1,'textarrow',[0.5 0.15],...
+ %    [0.697213868003342 0.58],'Color',[0 0 0],'TextColor',[0 0 0],...
+ %    'String',{'Noise induced fluctuations'},...
+ %    'LineWidth',2,...
+ %    'FontWeight','bold',...
+ %    'FontSize',14,...
+ %    'FontName','Times New Roman', ...
+ %    'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom');
+ % annotation(figure1,"arrow",[0.55 0.8],...
+ %    [0.697213868003342 0.58],'Color',[0 0 0], 'LineWidth',2)
+
+
 
 %% 3m 正对 MT发射功率
 figure1 = figure;

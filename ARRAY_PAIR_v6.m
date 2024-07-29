@@ -87,7 +87,7 @@ function [iterTimes, PowerTotalItr, PowerFinalDistr, PhaseFinalDistr,...
     zz = [];
     for i = 1:step
         phase_noise_var = 0.3101723;
-        phase_noise_var = 0.8;
+        phase_noise_var = 0.5;
         stable_cnt = stable_cnt - 1;
         disp(i);
         
@@ -125,7 +125,7 @@ function [iterTimes, PowerTotalItr, PowerFinalDistr, PhaseFinalDistr,...
             % Plot_space_power(xx,yy,zz)
             [xx,yy,zz2] = Scan_space_power([-0.2,0.2],[-0.1,3.1],BS_T_phase,BS_T_power,BS_T_pos,lambda_t,Gt);
             % Plot_space_power(xx,yy,zz2)
-            filename = sprintf('./results/space_plot/r.4d3r0itr%d_highnoise.mat',i);
+            filename = sprintf('./results/space_plot/r.4d3r0itr%d_5noise.mat',i);
             save(filename, "xx", "yy", "zz", "zz2")
         end
 
