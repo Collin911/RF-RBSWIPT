@@ -5,11 +5,12 @@
 % 返回值分别为迭代次数、稳定后接收阵列功率、发射阵列迭代功率、接收阵列迭代功率、稳定后发射（接收）端功率分布、相位分布
 function [iterTimes, PowerTotalItr, PowerFinalDistr, PhaseFinalDistr,... 
     Positions, PowerFirstDistr, PhaseFirstDistr, Ez_p, Ez_r, plot] = ...
-    ARRAY_PAIR_v6(lambda_t, lambda_r, array_nt, array_nr, array_dt, array_dr, Gt, D, R_x, rComm, rPower)
+    ARRAY_PAIR_v6_obstruction(lambda_t, lambda_r, array_nt, array_nr, array_dt, array_dr, Gt, D, R_x, rComm, rPower, d_BS)
 % T is for Tx, R is for Rx
 % Both BS and MT has its respective Tx and Rx
 % rComm is the ratio splitted for communication
 % rPower is the one for power transfer
+% d_BS is the distance from BS to the obstacle
 
     plot = {};    
 
@@ -29,17 +30,6 @@ function [iterTimes, PowerTotalItr, PowerFinalDistr, PhaseFinalDistr,...
     MT_R_phase = zeros(1, array_nt*array_nt);
     MT_T_phase = zeros(1, array_nr*array_nr);
     BS_R_phase = zeros(1, array_nr*array_nr);
-
-    % GPU feature is deprecated due to inefficiency
-    % if gpuIdx ~= 0
-    %     gpuDevice(gpuIdx);
-    %     BS_T_pos = gpuArray(BS_T_pos);
-    %     MT_T_pos = gpuArray(MT_T_pos);
-    %     BS_T_power = gpuArray(BS_T_power);
-    %     MT_T_power = gpuArray(MT_T_power);
-    %     BS_T_phase = gpuArray(BS_T_phase);
-    %     MT_T_phase = gpuArray(MT_T_phase);
-    % end
 
     %%% 计算发射阵列和接收阵列阵元的位置
     dt_max = (array_nt-1)/2 * array_dt;          %最边界的坐标

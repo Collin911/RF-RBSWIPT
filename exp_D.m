@@ -22,16 +22,19 @@ array_dr = lambda_r/2;                                                      %阵
 Gt = pi;                                                                    %天线的增益，为最大功率与理想点功率的比值，相当于3dm
 rComm = 0.006;
 rPower = 0.99;                                                             %功率返回比例
+D = 3;
 
 % 分析1：迭代优化，阵列数量40*40，距离
 
 % [N, P, Pp, Ppa, Pr, Po, Power_p, Power_r, Phase_p, Phase_r, Pos_p, Pos_r, Power_p_1, Phase_p_1] = ...
 %     ARRAY_PAIR(lambda_t, array_nt, array_nr, array_dt, Gt, D, R_x);
-for D = 3
-    D
+for returnRatio = 0.001:0.001:0.003
+    rPower = 1-rComm-returnRatio
     % This is the benchmark tesing do NOT uncomment unless needed
     % [N, P, Pp, Ppa, Pr, Po, Power_p, Power_r, Phase_p, Phase_r, Pos_p, Pos_r, Power_p_1, Phase_p_1] = ...
     %      ARRAY_PAIR(lambda_t, array_nt, array_nr, array_dt, Gt, D, R_x);
+
+    % This is the testing withour phase noise
     % [iterTimes1, PowerTotalItr1, PowerFinalDistr1, PhaseFinalDistr1,Positions1, PowerFirstDistr1, PhaseFirstDistr1, Ez_p1, Ez_r1, ~] = ...
     %     ARRAY_PAIR_v6_no_noise(lambda_t, lambda_r, array_nt, array_nr, array_dt, array_dr, Gt, D, R_x, rComm, rPower);
     % [PBt1,PMr1,PMt1,PBr1] = Parse_compact_return(PowerTotalItr1);
@@ -41,25 +44,28 @@ for D = 3
     % filename = sprintf('./results/50x50_single_HMC1132_/dist%.1fshift%.1fITR.mat',D,R_x);
     % save(filename)
 
+    % This is the test with phase noise
+    % Specify noise variance in ARRAY_PAIR
+    % 3-time exps to average randomness
     [iterTimes1, PowerTotalItr1, PowerFinalDistr1, PhaseFinalDistr1,Positions1, PowerFirstDistr1, PhaseFirstDistr1, Ez_p1, Ez_r1, ~] = ...
         ARRAY_PAIR_v6(lambda_t, lambda_r, array_nt, array_nr, array_dt, array_dr, Gt, D, R_x, rComm, rPower);
-    % [iterTimes2, PowerTotalItr2, PowerFinalDistr2, PhaseFinalDistr2,Positions2, PowerFirstDistr2, PhaseFirstDistr2, Ez_p2, Ez_r2, ~] = ...
-    %     ARRAY_PAIR_v6(lambda_t, lambda_r, array_nt, array_nr, array_dt, array_dr, Gt, D, R_x, rComm, rPower);
-    % [iterTimes3, PowerTotalItr3, PowerFinalDistr3, PhaseFinalDistr3,Positions3, PowerFirstDistr3, PhaseFirstDistr3, Ez_p3, Ez_r3, ~] = ...
-    %     ARRAY_PAIR_v6(lambda_t, lambda_r, array_nt, array_nr, array_dt, array_dr, Gt, D, R_x, rComm, rPower);
-    % 
-    % [PBt1,PMr1,PMt1,PBr1] = Parse_compact_return(PowerTotalItr1);
-    % [PBt2,PMr2,PMt2,PBr2] = Parse_compact_return(PowerTotalItr2);
-    % [PBt3,PMr3,PMt3,PBr3] = Parse_compact_return(PowerTotalItr3);
-    % 
-    % eta_down1= PMr1./PBt1;        % 下行链路效率
-    % eta_up1 = PBr1./PMt1;
-    % eta_down2= PMr2./PBt2;        % 下行链路效率
-    % eta_up2 = PBr2./PMt2;
-    % eta_down3= PMr3./PBt3;        % 下行链路效率
-    % eta_up3 = PBr3./PMt3;
-    % filename = sprintf('./results/50x50_single_HMC1132_/dist%.1fshift%.1f_noisy.mat',D,R_x);
-    % save(filename)
+    [iterTimes2, PowerTotalItr2, PowerFinalDistr2, PhaseFinalDistr2,Positions2, PowerFirstDistr2, PhaseFirstDistr2, Ez_p2, Ez_r2, ~] = ...
+        ARRAY_PAIR_v6(lambda_t, lambda_r, array_nt, array_nr, array_dt, array_dr, Gt, D, R_x, rComm, rPower);
+    [iterTimes3, PowerTotalItr3, PowerFinalDistr3, PhaseFinalDistr3,Positions3, PowerFirstDistr3, PhaseFirstDistr3, Ez_p3, Ez_r3, ~] = ...
+        ARRAY_PAIR_v6(lambda_t, lambda_r, array_nt, array_nr, array_dt, array_dr, Gt, D, R_x, rComm, rPower);
+
+    [PBt1,PMr1,PMt1,PBr1] = Parse_compact_return(PowerTotalItr1);
+    [PBt2,PMr2,PMt2,PBr2] = Parse_compact_return(PowerTotalItr2);
+    [PBt3,PMr3,PMt3,PBr3] = Parse_compact_return(PowerTotalItr3);
+
+    eta_down1= PMr1./PBt1;        % 下行链路效率
+    eta_up1 = PBr1./PMt1;
+    eta_down2= PMr2./PBt2;        % 下行链路效率
+    eta_up2 = PBr2./PMt2;
+    eta_down3= PMr3./PBt3;        % 下行链路效率
+    eta_up3 = PBr3./PMt3;
+    filename = sprintf('./results/50x50_single_HMC1132_/dist%.1fshift%.1freturn%.1f_noisy.mat',D,R_x, returnRatio*100);
+    save(filename)
 end
 
 

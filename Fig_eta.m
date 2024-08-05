@@ -193,11 +193,11 @@ power_charge = power_down_r *0.99;
 clear plot
 figure
 hold on
-set(gcf, 'unit', 'inch', 'position', [3 6.5 7 4])
+set(gcf, 'unit', 'inch', 'position', [3 3.5 7 4])
 
 plot(Ds, pow2db(power_up_t)+30, 'LineStyle',':','Marker', '^','MarkerSize',2,'LineWidth',2, 'color', [231 76 60]./255);
 plot(Ds, pow2db(power_up_r)+30, 'LineStyle','-','Marker', '^','MarkerSize',2,'LineWidth',2, 'color', [231 76 60]./255);
-plot(Ds, pow2db(power_charge)+30, 'LineStyle',':','Marker', 'd','MarkerSize',2,'LineWidth',2, 'color', [241 196 15]./255);
+%plot(Ds, pow2db(power_charge)+30, 'LineStyle',':','Marker', 'd','MarkerSize',2,'LineWidth',2, 'color', [241 196 15]./255);
 plot(Ds, pow2db(power_down_t)+30, 'LineStyle',':','Marker', 'v','MarkerSize',2,'LineWidth',2, 'color', [0 0.4470 0.7410]);
 plot(Ds, pow2db(power_down_r)+30, 'LineStyle','-','Marker', 'v','MarkerSize',2,'LineWidth',2, 'color', [0 0.4470 0.7410]);
 
@@ -208,7 +208,7 @@ xlim([1 5]);
 
 
 set(gca,'position',[0.089, 0.11, 0.899, 0.87])
-legend('uplink Tx', 'uplink Rx', 'Available for charging',...
+legend('uplink Tx', 'uplink Rx', ...'Available for charging',...
      'downlink Tx', 'downlink Rx',...
     ...%'$\alpha = 2.5\%$, down', '$\alpha = 2.5\%$, up', ...
     ...% '$\alpha = 3.5\%$, down, ideal', '$\alpha = 3.5\%$, down, noisy', ...
